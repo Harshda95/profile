@@ -18,8 +18,9 @@ app.use(express.json());
 
 // Basic rate limiting to prevent contact-form spam
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // limit each IP to 10 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  trustProxy: true, // ye add karo
   message: { error: "Too many requests. Please try again later." },
 });
 

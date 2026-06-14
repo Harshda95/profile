@@ -1,7 +1,8 @@
 import express from "express";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const router = express.Router();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -9,30 +10,17 @@ router.post("/", async (req, res, next) => {
   try {
     const { name, email, message } = req.body;
 
-    if (!name || !email || !message) {
+    if (!name || !email || !message)
       return res.status(400).json({ error: "All fields are required." });
-    }
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(email))
       return res.status(400).json({ error: "Please provide a valid email." });
-    }
-    if (name.length > 100 || message.length > 2000) {
+    if (name.length > 100 || message.length > 2000)
       return res.status(400).json({ error: "Input too long." });
-    }
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.resend.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "resend",
-        pass: process.env.RESEND_API_KEY,
-      },
-    });
-
-    await transporter.sendMail({
-      from: "onboarding@resend.dev", // ye change karo
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: process.env.CONTACT_RECEIVER,
-      replyTo: email,
+      reply_to: email,
       subject: `Portfolio contact from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     });
@@ -43,4 +31,4 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-export default router;
+export default router;c
