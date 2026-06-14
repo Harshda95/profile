@@ -20,17 +20,17 @@ router.post("/", async (req, res, next) => {
     }
 
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
+      host: "smtp.resend.com",
       port: 465,
       secure: true,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: "resend",
+        pass: process.env.RESEND_API_KEY,
       },
     });
 
     await transporter.sendMail({
-      from: process.env.SMTP_USER,
+      from: "onboarding@resend.dev", // ye change karo
       to: process.env.CONTACT_RECEIVER,
       replyTo: email,
       subject: `Portfolio contact from ${name}`,
